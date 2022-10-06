@@ -1,0 +1,7 @@
+--data_root ./data/statefarm/imgs
+--workers 0
+--driver_image_csv ./data/statefarm/driver_imgs_list.csv
+--model resnet50
+--pretrained
+--input-size 3 224 224
+--sched cosine
