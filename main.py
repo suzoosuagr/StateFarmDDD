@@ -17,5 +17,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser('config parser')
     parser.add_argument('--config', type=str, default='./Configs/debug_config.txt')
     arg = parser.parse_args()
+    cprint(f"[*] load config from {arg.config}", "blue")
     config, unparsed = get_config_debug(arg.config)
     main(config)

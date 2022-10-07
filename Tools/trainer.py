@@ -35,7 +35,7 @@ class TimmTrainer():
             assert config.aug_splits > 1
             self.num_aug_splits = config.aug_splits
         config.prefetcher = not config.no_prefetcher
-        self.output_dir = os.path.join(config.output, config.experiment),
+        self.output_dir = os.path.join(config.output, config.experiment)
         if config.use_gpu and torch.cuda.is_available():
             self.device = 'cuda'
             cprint("[*] Using CUDA", 'blue')
@@ -328,7 +328,7 @@ class TimmTrainer():
         return OrderedDict([('loss', losses_m.avg)])
 
 
-    def validate(model, loader, loss_fn, args, amp_autocast=suppress, log_suffix=''):
+    def validate(self, model, loader, loss_fn, args, amp_autocast=suppress, log_suffix=''):
         batch_time_m = utils.AverageMeter()
         losses_m = utils.AverageMeter()
         top1_m = utils.AverageMeter()
@@ -376,7 +376,7 @@ class TimmTrainer():
                 end = time.time()
                 if args.local_rank == 0 and (last_batch or batch_idx % args.log_interval == 0):
                     log_name = 'Test' + log_suffix
-                    _logger.info(
+                    cprint(
                         '{0}: [{1:>4d}/{2}]  '
                         'Time: {batch_time.val:.3f} ({batch_time.avg:.3f})  '
                         'Loss: {loss.val:>7.4f} ({loss.avg:>6.4f})  '
@@ -384,7 +384,7 @@ class TimmTrainer():
                         'Acc@3: {top3.val:>7.4f} ({top3.avg:>7.4f})  '
                         'Acc@5: {top5.val:>7.4f} ({top5.avg:>7.4f})'.format(
                             log_name, batch_idx, last_idx, batch_time=batch_time_m,
-                            loss=losses_m, top1=top1_m, top3=top3_m, top5=top5_m))
+                            loss=losses_m, top1=top1_m, top3=top3_m, top5=top5_m), color='green')
 
         metrics = OrderedDict([('loss', losses_m.avg), ('top1', top1_m.avg), ('top3', top3_m.avg), ('top5', top5_m.avg)])
 

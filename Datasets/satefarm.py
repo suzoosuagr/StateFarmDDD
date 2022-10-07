@@ -30,11 +30,17 @@ class StateFarmDataset(Dataset):
         path, target = self.filepaths[index]
         sample = pil_loader(path)
         if self.transform is not None:
-            for trans in self.transform:
-                sample = trans(sample)
+            if isinstance(self.transform, tuple):
+                for trans in self.transform:
+                    sample = trans(sample)
+            else:
+                sample = self.transform(sample)
         if self.target_transform is not None:
-            for trans in self.target_transform:
-                target = trans(target)
+            if isinstance(self.target_transform, tuple):
+                for trans in self.target_transform:
+                    target = trans(target)
+            else:
+                sample = self.target_transform(sample)
 
         return sample, target
 
@@ -66,4 +72,5 @@ class StateFarmDataset(Dataset):
         return file_list
 
     def __len__(self):
-        return len(self.filepaths)
+        # return len(self.filepaths)
+        return 128
