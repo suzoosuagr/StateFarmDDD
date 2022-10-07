@@ -19,8 +19,8 @@ class StateFarmDataset(Dataset):
         super(StateFarmDataset, self).__init__()
         self.config = config
         self.split = split
-        self.data_root = os.path.join(config.data_root, split)
-        self.val_subjects = config.val_subjects
+        self.data_root = os.path.join(config.data_root, 'train') # using data from official train folder
+        self.val_subjects = config.val_subjects                  #      the split was done by weiheng.
         self.transform = transform
         self.target_transform = target_transform
         self.files = self._get_filepath(self.data_root)
@@ -30,9 +30,11 @@ class StateFarmDataset(Dataset):
         path, target = self.filepaths[index]
         sample = pil_loader(path)
         if self.transform is not None:
-            sample = self.transform(sample)
+            for trans in self.transform:
+                sample = trans(sample)
         if self.target_transform is not None:
-            target = self.target_transform(target)
+            for trans in self.target_transform:
+                target = trans(target)
 
         return sample, target
 
@@ -53,14 +55,14 @@ class StateFarmDataset(Dataset):
                     subject, classname, filename = line
                     label = str2label(classname)
                     if (split == 'train' and subject not in val_subjects) or \
-                       (split == 'valid' and subject in val_subjects):
+                       (split == 'test' and subject in val_subjects):
                         filepath = os.path.join(data_root, classname, filename)
                         if filepath in self.files:
                             file_list.append((filepath, label))
                         else:
                             invalid_list.append(filename)
-        cprint(f" -> Parse {split}: {len(file_list)} images", 'green')
-        cprint(f" -> Parse {split}: {len(invalid_list)} images", 'yellow')
+        cprint(f" -> Parse {split}: {len(file_list)} images", 'cyan')
+        cprint(f"    -> found {len(invalid_list)} invalid images", 'yellow')
         return file_list
 
     def __len__(self):
