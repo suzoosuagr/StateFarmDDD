@@ -72,5 +72,5 @@ class StateFarmDataset(Dataset):
         return file_list
 
     def __len__(self):
-        # return len(self.filepaths)
-        return 128
+        return len(self.filepaths)
+        # return 128
